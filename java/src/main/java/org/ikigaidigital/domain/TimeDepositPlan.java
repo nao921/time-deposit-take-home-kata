@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 public interface TimeDepositPlan {
     /**
@@ -6,4 +6,3 @@ public interface TimeDepositPlan {
      */
     double interestUnrounded(TimeDeposit deposit);
 }
-

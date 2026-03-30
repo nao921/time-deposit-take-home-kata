@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 import org.junit.jupiter.api.Test;
 
@@ -67,4 +67,3 @@ public class StudentTimeDepositPlanTest {
         assertThat(updatedBalance(deposit, plan)).isEqualTo(100.25);
     }
 }
-

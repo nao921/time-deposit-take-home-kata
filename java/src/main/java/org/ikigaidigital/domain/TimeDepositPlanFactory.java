@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 class TimeDepositPlanFactory {
     private static final TimeDepositPlan BASIC = new BasicTimeDepositPlan();
@@ -15,4 +15,3 @@ class TimeDepositPlanFactory {
         };
     }
 }
-

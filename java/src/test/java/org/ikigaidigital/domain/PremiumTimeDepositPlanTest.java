@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 import org.junit.jupiter.api.Test;
 
@@ -76,4 +76,3 @@ public class PremiumTimeDepositPlanTest {
         assertThat(updatedBalance(deposit, plan)).isEqualTo(100.42);
     }
 }
-

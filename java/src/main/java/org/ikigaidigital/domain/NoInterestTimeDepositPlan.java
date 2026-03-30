@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 class NoInterestTimeDepositPlan implements TimeDepositPlan {
     @Override
@@ -6,4 +6,3 @@ class NoInterestTimeDepositPlan implements TimeDepositPlan {
         return 0.0;
     }
 }
-

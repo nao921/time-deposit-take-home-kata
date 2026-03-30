@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 class BasicTimeDepositPlan extends AbstractTimeDepositPlan {
     @Override
@@ -7,4 +7,3 @@ class BasicTimeDepositPlan extends AbstractTimeDepositPlan {
         return deposit.getBalance() * 0.01 / 12;
     }
 }
-

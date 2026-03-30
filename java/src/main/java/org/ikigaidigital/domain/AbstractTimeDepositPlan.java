@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 /**
  * Shared "grace period" logic:
@@ -17,4 +17,3 @@ public abstract class AbstractTimeDepositPlan implements TimeDepositPlan {
 
     protected abstract double interestAfterGrace(TimeDeposit deposit);
 }
-

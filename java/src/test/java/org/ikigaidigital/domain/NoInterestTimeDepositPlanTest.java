@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,4 +23,3 @@ public class NoInterestTimeDepositPlanTest {
         assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
     }
 }
-
