@@ -4,7 +4,6 @@ import org.ikigaidigital.application.port.TimeDepositRepository;
 import org.ikigaidigital.application.usecase.GetAllTimeDepositsUseCase;
 import org.ikigaidigital.application.usecase.UpdateBalancesUseCase;
 import org.ikigaidigital.domain.TimeDepositCalculator;
-import org.ikigaidigital.infrastructure.persistence.InMemoryTimeDepositRepositoryAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,11 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ApplicationConfig {
-
-    @Bean
-    public TimeDepositRepository timeDepositRepository() {
-        return new InMemoryTimeDepositRepositoryAdapter();
-    }
 
     @Bean
     public TimeDepositCalculator timeDepositCalculator() {

@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: time-deposit-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/time_deposit
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+    org.ikigaidigital: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
