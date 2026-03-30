@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: Time Deposit API
+  description: API for managing time deposits and calculating interest
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /time-deposits:
+    get:
+      operationId: getAllTimeDeposits
+      summary: Get all time deposits
+      description: Retrieve all time deposits with their associated withdrawals
+      tags:
+        - Time Deposits
+      responses:
+        '200':
+          description: List of all time deposits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeDepositResponse'
+
+  /time-deposits/update-balances:
+    post:
+      operationId: updateBalances
+      summary: Update deposit balances
+      description: Update all time deposit balances based on accumulated interest
+      tags:
+        - Time Deposits
+      responses:
+        '200':
+          description: Balances updated successfully
+
+components:
+  schemas:
+    TimeDepositResponse:
+      type: object
+      required:
+        - id
+        - planType
+        - balance
+        - days
+        - withdrawals
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Unique identifier for the time deposit
+        planType:
+          type: string
+          description: The type of time deposit plan
+        balance:
+          type: number
+          format: double
+          description: Current balance including accrued interest
+        days:
+          type: integer
+          format: int32
+          description: Number of days the deposit has been held
+        withdrawals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WithdrawalResponse'
+          description: List of withdrawals from this deposit
+
+    WithdrawalResponse:
+      type: object
+      required:
+        - id
+        - timeDepositId
+        - amount
+        - date
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Unique identifier for the withdrawal
+        timeDepositId:
+          type: integer
+          format: int32
+          description: ID of the associated time deposit
+        amount:
+          type: number
+          format: double
+          description: Withdrawal amount
+        date:
+          type: string
+          format: date
+          description: Date of the withdrawal (YYYY-MM-DD)
