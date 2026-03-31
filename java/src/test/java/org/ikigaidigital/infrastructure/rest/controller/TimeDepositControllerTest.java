@@ -1,23 +1,21 @@
 package org.ikigaidigital.infrastructure.rest.controller;
 
-import org.ikigaidigital.domain.TimeDeposit;
-import org.ikigaidigital.domain.Withdrawal;
-import org.ikigaidigital.infrastructure.persistence.InMemoryTimeDepositRepositoryAdapter;
-import org.ikigaidigital.infrastructure.config.TestApplicationConfig;
+import org.ikigaidigital.infrastructure.persistence.TimeDepositEntity;
+import org.ikigaidigital.infrastructure.persistence.TimeDepositJpaRepository;
+import org.ikigaidigital.infrastructure.persistence.WithdrawalEntity;
+import org.ikigaidigital.infrastructure.persistence.WithdrawalJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@Import(TestApplicationConfig.class)
 @ActiveProfiles("test")
 public class TimeDepositControllerTest {
     private MockMvc mockMvc;
@@ -36,11 +33,16 @@ public class TimeDepositControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private InMemoryTimeDepositRepositoryAdapter repository;
+    private TimeDepositJpaRepository timeDepositRepository;
+
+    @Autowired
+    private WithdrawalJpaRepository withdrawalRepository;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        withdrawalRepository.deleteAll();
+        timeDepositRepository.deleteAll();
     }
 
     @Nested
@@ -48,8 +50,6 @@ public class TimeDepositControllerTest {
 
         @Test
         void getAll_returnsEmptyListWhenNoDeposits() throws Exception {
-            repository.seed(List.of(), Map.of());
-
             mockMvc.perform(get("/time-deposits"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(0)));
@@ -57,14 +57,13 @@ public class TimeDepositControllerTest {
 
         @Test
         void getAll_returnsDepositsWithCorrectStructure() throws Exception {
-            List<TimeDeposit> deposits = List.of(
-                    new TimeDeposit(1, "basic", 1200.00, 31),
-                    new TimeDeposit(2, "premium", 5000.00, 46)
-            );
-            Map<Integer, List<Withdrawal>> withdrawals = Map.of(
-                    1, List.of(new Withdrawal(101, 1, 100.00, LocalDate.of(2026, 1, 15)))
-            );
-            repository.seed(deposits, withdrawals);
+            TimeDepositEntity deposit1 = new TimeDepositEntity(1, "basic", BigDecimal.valueOf(1200.00), 31);
+            TimeDepositEntity deposit2 = new TimeDepositEntity(2, "premium", BigDecimal.valueOf(5000.00), 46);
+            timeDepositRepository.save(deposit1);
+            timeDepositRepository.save(deposit2);
+
+            WithdrawalEntity withdrawal = new WithdrawalEntity(101, 1, 100.00, LocalDate.of(2026, 1, 15));
+            withdrawalRepository.save(withdrawal);
 
             mockMvc.perform(get("/time-deposits"))
                     .andExpect(status().isOk())
@@ -86,10 +85,8 @@ public class TimeDepositControllerTest {
 
         @Test
         void updateBalances_returns200WithEmptyBody() throws Exception {
-            List<TimeDeposit> deposits = List.of(
-                    new TimeDeposit(1, "basic", 1200.00, 31)
-            );
-            repository.seed(deposits, Map.of());
+            TimeDepositEntity deposit = new TimeDepositEntity(1, "basic", BigDecimal.valueOf(1200.00), 31);
+            timeDepositRepository.save(deposit);
 
             mockMvc.perform(post("/time-deposits/update-balances"))
                     .andExpect(status().isOk());
@@ -97,11 +94,10 @@ public class TimeDepositControllerTest {
 
         @Test
         void updateBalances_updatesDepositBalances() throws Exception {
-            List<TimeDeposit> deposits = List.of(
-                    new TimeDeposit(1, "basic", 1200.00, 31),
-                    new TimeDeposit(2, "premium", 5000.00, 46)
-            );
-            repository.seed(deposits, Map.of());
+            TimeDepositEntity deposit1 = new TimeDepositEntity(1, "basic", BigDecimal.valueOf(1200.00), 31);
+            TimeDepositEntity deposit2 = new TimeDepositEntity(2, "premium", BigDecimal.valueOf(5000.00), 46);
+            timeDepositRepository.save(deposit1);
+            timeDepositRepository.save(deposit2);
 
             // Update balances
             mockMvc.perform(post("/time-deposits/update-balances"))
