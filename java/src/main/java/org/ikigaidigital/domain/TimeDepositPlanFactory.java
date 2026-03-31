@@ -1,17 +1,29 @@
 package org.ikigaidigital.domain;
 
-class TimeDepositPlanFactory {
-    private static final TimeDepositPlan BASIC = new BasicTimeDepositPlan();
-    private static final TimeDepositPlan STUDENT = new StudentTimeDepositPlan();
-    private static final TimeDepositPlan PREMIUM = new PremiumTimeDepositPlan();
-    private static final TimeDepositPlan NO_INTEREST = new NoInterestTimeDepositPlan();
+import org.springframework.stereotype.Component;
+
+@Component
+public class TimeDepositPlanFactory {
+    private final BasicTimeDepositPlan basic;
+    private final StudentTimeDepositPlan student;
+    private final PremiumTimeDepositPlan premium;
+    private final NoInterestTimeDepositPlan noInterest;
+
+    public TimeDepositPlanFactory(BasicTimeDepositPlan basic,
+                                  StudentTimeDepositPlan student,
+                                  PremiumTimeDepositPlan premium) {
+        this.basic = basic;
+        this.student = student;
+        this.premium = premium;
+        this.noInterest = new NoInterestTimeDepositPlan();
+    }
 
     public TimeDepositPlan from(String planType) {
         return switch (planType) {
-            case "student" -> STUDENT;
-            case "premium" -> PREMIUM;
-            case "basic" -> BASIC;
-            default -> NO_INTEREST;
+            case "student" -> student;
+            case "premium" -> premium;
+            case "basic" -> basic;
+            default -> noInterest;
         };
     }
 }

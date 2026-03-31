@@ -16,6 +16,11 @@ public class StudentTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
+    private static final int GRACE_PERIOD_DAYS = 30;
+    private static final int MONTHS_IN_YEAR = 12;
+    private static final double INTEREST_RATE = 0.03;
+    private static final int MAX_INTEREST_DAYS = 365;
+
     @ParameterizedTest
     @CsvSource({
         // student_exactlyDay30_noInterest
@@ -24,7 +29,7 @@ public class StudentTimeDepositPlanTest {
         "2, 1200.00, 31, 1203.00",
         // day365_appliesInterest (last day before the upper cutoff (<= 365 gets interest))
         "3, 1200.00, 365, 1203.00",
-        // day366_noInterest (days >= 366 → zero interest for student)
+        // day366_noInterest (days > 365 → zero interest for student)
         "4, 1200.00, 366, 1200.00",
         // day400_noInterest
         "5, 1200.00, 400, 1200.00",
@@ -33,7 +38,7 @@ public class StudentTimeDepositPlanTest {
     })
     void student_timeDepositPlans(int id, double balance, int days, double expectedBalance) {
         var deposit = new TimeDeposit(id, "student", balance, days);
-        var plan = new StudentTimeDepositPlan();
+        var plan = new StudentTimeDepositPlan(GRACE_PERIOD_DAYS, MONTHS_IN_YEAR, INTEREST_RATE, MAX_INTEREST_DAYS);
 
         assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }

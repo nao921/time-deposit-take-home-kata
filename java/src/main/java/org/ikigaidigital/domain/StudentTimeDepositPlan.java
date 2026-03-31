@@ -1,12 +1,21 @@
 package org.ikigaidigital.domain;
 
-class StudentTimeDepositPlan extends AbstractTimeDepositPlan {
+public class StudentTimeDepositPlan extends AbstractTimeDepositPlan {
+    private final double interestRate;
+    private final int maxInterestDays;
+
+    public StudentTimeDepositPlan(int gracePeriodDays, int monthsInYear, double interestRate, int maxInterestDays) {
+        super(gracePeriodDays, monthsInYear);
+        this.interestRate = interestRate;
+        this.maxInterestDays = maxInterestDays;
+    }
+
     @Override
     protected double interestAfterGrace(TimeDeposit deposit) {
-        // Student has no interest for days >= 366 (monthly interest only applies for 31..365).
-        if (deposit.getDays() >= 366) {
+        // Student has no interest for days > maxInterestDays (monthly interest only applies after grace period).
+        if (deposit.getDays() > maxInterestDays) {
             return 0.0;
         }
-        return deposit.getBalance() * 0.03 / 12;
+        return deposit.getBalance() * interestRate / monthsInYear;
     }
 }

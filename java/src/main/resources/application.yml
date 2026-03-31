@@ -23,3 +23,16 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+time-deposit:
+  grace-period-days: 30
+  months-in-year: 12
+  plans:
+    basic:
+      interest-rate: 0.01
+    student:
+      interest-rate: 0.03
+      max-interest-days: 365
+    premium:
+      interest-rate: 0.05
+      interest-start-days: 45

@@ -5,7 +5,11 @@ import java.math.RoundingMode;
 import java.util.List;
 
 public class TimeDepositCalculator {
-    private final TimeDepositPlanFactory planFactory = new TimeDepositPlanFactory();
+    private final TimeDepositPlanFactory planFactory;
+
+    public TimeDepositCalculator(TimeDepositPlanFactory planFactory) {
+        this.planFactory = planFactory;
+    }
 
     public void updateBalance(List<TimeDeposit> xs) {
         for (TimeDeposit deposit : xs) {

@@ -33,6 +33,9 @@ public class UpdateBalancesIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private TimeDepositJpaRepository timeDepositRepository;
 
+    @Autowired
+    private TimeDepositCalculator calculator;
+
     private String getBaseUrl() {
         return "http://localhost:" + port;
     }
@@ -57,7 +60,7 @@ public class UpdateBalancesIntegrationTest extends AbstractIntegrationTest {
             new TimeDeposit(2, "student", 2000.00, 180),
             new TimeDeposit(3, "premium", 5000.00, 90)
         );
-        new TimeDepositCalculator().updateBalance(expected);
+        calculator.updateBalance(expected);
 
         // Act: call POST /time-deposits/update-balances
         ResponseEntity<Void> response = restTemplate.postForEntity(

@@ -16,6 +16,10 @@ public class BasicTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
+    private static final int GRACE_PERIOD_DAYS = 30;
+    private static final int MONTHS_IN_YEAR = 12;
+    private static final double INTEREST_RATE = 0.01;
+
     @ParameterizedTest
     @CsvSource({
         // basic_exactlyDay30_noInterest
@@ -33,7 +37,7 @@ public class BasicTimeDepositPlanTest {
     })
     void basic_timeDepositPlans(int id, double balance, int days, double expectedBalance) {
         var deposit = new TimeDeposit(id, "basic", balance, days);
-        var plan = new BasicTimeDepositPlan();
+        var plan = new BasicTimeDepositPlan(GRACE_PERIOD_DAYS, MONTHS_IN_YEAR, INTEREST_RATE);
 
         assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }
