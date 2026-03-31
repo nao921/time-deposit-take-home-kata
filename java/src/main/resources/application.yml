@@ -16,6 +16,7 @@ logging:
   level:
     root: INFO
     org.ikigaidigital: DEBUG
+    org.flywaydb: DEBUG
 
 springdoc:
   api-docs:

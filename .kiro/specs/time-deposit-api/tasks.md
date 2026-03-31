@@ -141,15 +141,15 @@ Migrate the existing Maven/Java project to a Spring Boot 3.x application followi
     - **Validates: Requirements 6.5**
 
 - [ ] 11. Implement Testcontainers integration tests
-  - [ ] 11.1 Create base integration test configuration
+  - [x] 11.1 Create base integration test configuration
     - Create abstract `AbstractIntegrationTest` with `@SpringBootTest(webEnvironment=RANDOM_PORT)`, `@Testcontainers`, `@Container PostgreSQLContainer`, and `@DynamicPropertySource` injecting the container JDBC URL
     - _Requirements: 9.1_
 
-  - [ ] 11.2 Write integration test for GET /time-deposits
+  - [x] 11.2 Write integration test for GET /time-deposits
     - Extend `AbstractIntegrationTest`; seed `time_deposits` and `withdrawals` rows directly via JPA; call `GET /time-deposits` with `TestRestTemplate`; assert HTTP 200 and response body matches seeded data
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 9.3_
 
-  - [ ] 11.3 Write integration test for POST /time-deposits/update-balances
+  - [x] 11.3 Write integration test for POST /time-deposits/update-balances
     - Extend `AbstractIntegrationTest`; seed deposits; call `POST /time-deposits/update-balances`; query DB directly; assert each balance matches `TimeDepositCalculator.updateBalance` output
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 9.2_
 
