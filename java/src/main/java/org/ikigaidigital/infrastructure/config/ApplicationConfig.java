@@ -6,6 +6,7 @@ import org.ikigaidigital.application.usecase.UpdateBalancesUseCase;
 import org.ikigaidigital.domain.TimeDepositCalculator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Spring configuration for application dependencies.
@@ -27,5 +28,10 @@ public class ApplicationConfig {
     public UpdateBalancesUseCase updateBalancesUseCase(TimeDepositRepository repository,
                                                         TimeDepositCalculator calculator) {
         return new UpdateBalancesUseCase(repository, calculator);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }
