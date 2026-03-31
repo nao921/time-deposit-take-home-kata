@@ -1,7 +1,7 @@
 package org.ikigaidigital.application.model;
 
-import org.ikigaidigital.domain.TimeDeposit;
-import org.ikigaidigital.domain.Withdrawal;
+import org.ikigaidigital.domain.timedeposit.TimeDeposit;
+import org.ikigaidigital.domain.withdrawal.Withdrawal;
 
 import java.util.List;
 

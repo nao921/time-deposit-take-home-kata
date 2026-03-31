@@ -1,9 +1,9 @@
 package org.ikigaidigital;
 
-import org.ikigaidigital.infrastructure.persistence.TimeDepositEntity;
-import org.ikigaidigital.infrastructure.persistence.TimeDepositJpaRepository;
-import org.ikigaidigital.infrastructure.persistence.WithdrawalEntity;
-import org.ikigaidigital.infrastructure.persistence.WithdrawalJpaRepository;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.TimeDepositEntity;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.TimeDepositJpaRepository;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.WithdrawalEntity;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.WithdrawalJpaRepository;
 import org.ikigaidigital.infrastructure.rest.generated.dto.TimeDepositResponse;
 import org.ikigaidigital.infrastructure.rest.generated.dto.WithdrawalResponse;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,9 @@
 package org.ikigaidigital;
 
-import org.ikigaidigital.domain.TimeDeposit;
-import org.ikigaidigital.domain.TimeDepositCalculator;
-import org.ikigaidigital.infrastructure.persistence.TimeDepositEntity;
-import org.ikigaidigital.infrastructure.persistence.TimeDepositJpaRepository;
+import org.ikigaidigital.domain.timedeposit.TimeDeposit;
+import org.ikigaidigital.domain.timedeposit.TimeDepositCalculator;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.TimeDepositEntity;
+import org.ikigaidigital.infrastructure.adapter.out.persistence.jpa.TimeDepositJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
