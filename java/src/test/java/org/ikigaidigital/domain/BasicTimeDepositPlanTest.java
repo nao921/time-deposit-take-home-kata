@@ -1,6 +1,7 @@
 package org.ikigaidigital.domain;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,55 +16,25 @@ public class BasicTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
-    @Test
-    void basic_exactlyDay30_noInterest() {
-        var deposit = new TimeDeposit(1, "basic", 1200.00, 30);
+    @ParameterizedTest
+    @CsvSource({
+        // basic_exactlyDay30_noInterest
+        "1, 1200.00, 30, 1200.00",
+        // basic_day1_noInterest
+        "2, 500.00, 1, 500.00",
+        // day31_appliesOnePercentAnnualMonthly (interest = 1200 * 0.01 / 12 = 1.00)
+        "3, 1200.00, 31, 1201.00",
+        // day365_appliesInterest (interest = 1200 * 0.01 / 12 = 1.00)
+        "4, 1200.00, 365, 1201.00",
+        // day366_appliesInterest (basic has no upper day limit — interest still applies)
+        "5, 1200.00, 366, 1201.00",
+        // interestRoundedHalfUp (interest = 100 * 0.01 / 12 = 0.0833... → rounds to 0.08)
+        "6, 100.00, 31, 100.08",
+    })
+    void basic_timeDepositPlans(int id, double balance, int days, double expectedBalance) {
+        var deposit = new TimeDeposit(id, "basic", balance, days);
         var plan = new BasicTimeDepositPlan();
 
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void basic_day1_noInterest() {
-        var deposit = new TimeDeposit(2, "basic", 500.00, 1);
-        var plan = new BasicTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(500.00);
-    }
-
-    @Test
-    void day31_appliesOnePercentAnnualMonthly() {
-        // interest = 1200 * 0.01 / 12 = 1.00
-        var deposit = new TimeDeposit(3, "basic", 1200.00, 31);
-        var plan = new BasicTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1201.00);
-    }
-
-    @Test
-    void day365_appliesInterest() {
-        // interest = 1200 * 0.01 / 12 = 1.00
-        var deposit = new TimeDeposit(4, "basic", 1200.00, 365);
-        var plan = new BasicTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1201.00);
-    }
-
-    @Test
-    void day366_appliesInterest() {
-        // basic has no upper day limit — interest still applies
-        var deposit = new TimeDeposit(5, "basic", 1200.00, 366);
-        var plan = new BasicTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1201.00);
-    }
-
-    @Test
-    void interestRoundedHalfUp() {
-        // interest = 100 * 0.01 / 12 = 0.0833... → rounds to 0.08
-        var deposit = new TimeDeposit(6, "basic", 100.00, 31);
-        var plan = new BasicTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(100.08);
+        assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }
 }

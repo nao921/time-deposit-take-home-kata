@@ -1,6 +1,7 @@
 package org.ikigaidigital.domain;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,55 +16,25 @@ public class StudentTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
-    @Test
-    void student_exactlyDay30_noInterest() {
-        var deposit = new TimeDeposit(1, "student", 1200.00, 30);
+    @ParameterizedTest
+    @CsvSource({
+        // student_exactlyDay30_noInterest
+        "1, 1200.00, 30, 1200.00",
+        // day31_appliesThreePercentAnnualMonthly (interest = 1200 * 0.03 / 12 = 3.00)
+        "2, 1200.00, 31, 1203.00",
+        // day365_appliesInterest (last day before the upper cutoff (<= 365 gets interest))
+        "3, 1200.00, 365, 1203.00",
+        // day366_noInterest (days >= 366 → zero interest for student)
+        "4, 1200.00, 366, 1200.00",
+        // day400_noInterest
+        "5, 1200.00, 400, 1200.00",
+        // interestRoundedHalfUp (interest = 100 * 0.03 / 12 = 0.25)
+        "6, 100.00, 31, 100.25",
+    })
+    void student_timeDepositPlans(int id, double balance, int days, double expectedBalance) {
+        var deposit = new TimeDeposit(id, "student", balance, days);
         var plan = new StudentTimeDepositPlan();
 
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void day31_appliesThreePercentAnnualMonthly() {
-        // interest = 1200 * 0.03 / 12 = 3.00
-        var deposit = new TimeDeposit(2, "student", 1200.00, 31);
-        var plan = new StudentTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1203.00);
-    }
-
-    @Test
-    void day365_appliesInterest() {
-        // last day before the upper cutoff (<= 365 gets interest)
-        var deposit = new TimeDeposit(3, "student", 1200.00, 365);
-        var plan = new StudentTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1203.00);
-    }
-
-    @Test
-    void day366_noInterest() {
-        // days >= 366 → zero interest for student
-        var deposit = new TimeDeposit(4, "student", 1200.00, 366);
-        var plan = new StudentTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void day400_noInterest() {
-        var deposit = new TimeDeposit(5, "student", 1200.00, 400);
-        var plan = new StudentTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void interestRoundedHalfUp() {
-        // interest = 100 * 0.03 / 12 = 0.25
-        var deposit = new TimeDeposit(6, "student", 100.00, 31);
-        var plan = new StudentTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(100.25);
+        assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }
 }

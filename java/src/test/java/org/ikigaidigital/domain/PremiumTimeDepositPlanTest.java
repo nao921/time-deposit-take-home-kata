@@ -1,6 +1,7 @@
 package org.ikigaidigital.domain;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,64 +16,27 @@ public class PremiumTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
-    @Test
-    void premium_exactlyDay30_noInterest() {
-        var deposit = new TimeDeposit(1, "premium", 1200.00, 30);
+    @ParameterizedTest
+    @CsvSource({
+        // premium_exactlyDay30_noInterest
+        "1, 1200.00, 30, 1200.00",
+        // day45_noInterest (boundary: days <= 45 → zero interest)
+        "2, 1200.00, 45, 1200.00",
+        // day31_noInterest (days <= 45 → zero interest)
+        "3, 1200.00, 31, 1200.00",
+        // day46_appliesFivePercentAnnualMonthly (interest = 1200 * 0.05 / 12 = 5.00)
+        "4, 1200.00, 46, 1205.00",
+        // day365_appliesInterest
+        "5, 1200.00, 365, 1205.00",
+        // day366_appliesInterest (premium has no upper day limit)
+        "6, 1200.00, 366, 1205.00",
+        // interestRoundedHalfUp (interest = 100 * 0.05 / 12 = 0.4166... → rounds to 0.42)
+        "7, 100.00, 46, 100.42",
+    })
+    void premium_timeDepositPlans(int id, double balance, int days, double expectedBalance) {
+        var deposit = new TimeDeposit(id, "premium", balance, days);
         var plan = new PremiumTimeDepositPlan();
 
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void day45_noInterest() {
-        // boundary: days <= 45 → zero interest
-        var deposit = new TimeDeposit(2, "premium", 1200.00, 45);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void day31_noInterest() {
-        // days <= 45 → zero interest
-        var deposit = new TimeDeposit(3, "premium", 1200.00, 31);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
-    }
-
-    @Test
-    void day46_appliesFivePercentAnnualMonthly() {
-        // interest = 1200 * 0.05 / 12 = 5.00
-        var deposit = new TimeDeposit(4, "premium", 1200.00, 46);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1205.00);
-    }
-
-    @Test
-    void day365_appliesInterest() {
-        var deposit = new TimeDeposit(5, "premium", 1200.00, 365);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1205.00);
-    }
-
-    @Test
-    void day366_appliesInterest() {
-        // premium has no upper day limit
-        var deposit = new TimeDeposit(6, "premium", 1200.00, 366);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1205.00);
-    }
-
-    @Test
-    void interestRoundedHalfUp() {
-        // interest = 100 * 0.05 / 12 = 0.4166... → rounds to 0.42
-        var deposit = new TimeDeposit(7, "premium", 100.00, 46);
-        var plan = new PremiumTimeDepositPlan();
-
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(100.42);
+        assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }
 }

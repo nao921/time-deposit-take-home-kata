@@ -1,6 +1,7 @@
 package org.ikigaidigital.domain;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,11 +16,17 @@ public class NoInterestTimeDepositPlanTest {
         return deposit.getBalance() + roundedInterest;
     }
 
-    @Test
-    void unknownPlanType_noInterest() {
-        var plan = new TimeDepositPlanFactory().from("gold");
-        var deposit = new TimeDeposit(1, "gold", 1200.00, 365);
+    @ParameterizedTest
+    @CsvSource({
+        // unknownPlanType_noInterest
+        "1, gold, 1200.00, 365, 1200.00",
+        // empty planType
+        "3, '', 1000.00, 30, 1000.00"
+    })
+    void unknownPlanType_noInterest(int id, String planType, double balance, int days, double expectedBalance) {
+        var plan = new TimeDepositPlanFactory().from(planType);
+        var deposit = new TimeDeposit(id, planType, balance, days);
 
-        assertThat(updatedBalance(deposit, plan)).isEqualTo(1200.00);
+        assertThat(updatedBalance(deposit, plan)).isEqualTo(expectedBalance);
     }
 }
